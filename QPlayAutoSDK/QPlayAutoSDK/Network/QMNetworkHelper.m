@@ -89,21 +89,22 @@
 #pragma mark - 获取设备当前网络IP地址
 + (NSString *)getIPAddress:(BOOL)preferIPv4
 {
-    NSArray *searchArray = preferIPv4 ?
-    @[ IOS_VPN @"/" IP_ADDR_IPv4, IOS_VPN @"/" IP_ADDR_IPv6, IOS_WIFI @"/" IP_ADDR_IPv4, IOS_WIFI @"/" IP_ADDR_IPv6, IOS_CELLULAR @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv6 ] :
-    @[ IOS_VPN @"/" IP_ADDR_IPv6, IOS_VPN @"/" IP_ADDR_IPv4, IOS_WIFI @"/" IP_ADDR_IPv6, IOS_WIFI @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv6, IOS_CELLULAR @"/" IP_ADDR_IPv4 ] ;
-    
-    NSDictionary *addresses = [self getIPAddresses];
-    NSLog(@"addresses: %@", addresses);
-    
-    __block NSString *address;
-    [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)
-     {
-         address = addresses[key];
-         //筛选出IP地址格式
-         if([self isValidatIP:address]) *stop = YES;
-     } ];
-    return address.length>0 ? address : @"127.0.0.1";
+//    NSArray *searchArray = preferIPv4 ?
+//    @[ IOS_VPN @"/" IP_ADDR_IPv4, IOS_VPN @"/" IP_ADDR_IPv6, IOS_WIFI @"/" IP_ADDR_IPv4, IOS_WIFI @"/" IP_ADDR_IPv6, IOS_CELLULAR @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv6 ] :
+//    @[ IOS_VPN @"/" IP_ADDR_IPv6, IOS_VPN @"/" IP_ADDR_IPv4, IOS_WIFI @"/" IP_ADDR_IPv6, IOS_WIFI @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv6, IOS_CELLULAR @"/" IP_ADDR_IPv4 ] ;
+//
+//    NSDictionary *addresses = [self getIPAddresses];
+//    NSLog(@"addresses: %@", addresses);
+//
+//    __block NSString *address;
+//    [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)
+//     {
+//         address = addresses[key];
+//         //筛选出IP地址格式
+//         if([self isValidatIP:address]) *stop = YES;
+//     } ];
+//    return address.length>0 ? address : @"127.0.0.1";
+    return @"127.0.0.1";
 }
 
 + (BOOL)isValidatIP:(NSString *)ipAddress {

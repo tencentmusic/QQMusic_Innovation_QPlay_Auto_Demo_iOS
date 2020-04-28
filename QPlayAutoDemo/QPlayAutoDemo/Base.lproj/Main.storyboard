@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -52,7 +50,7 @@
                                             <action selector="onClickPlayNext:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aHl-W4-eaP"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="歌曲名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmM-xh-arl">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="歌曲名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmM-xh-arl">
                                         <rect key="frame" x="82" y="13" width="250" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -80,8 +78,8 @@
                                             <action selector="onClickLove:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aFz-Hg-JGc"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="歌手-专辑" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skb-KI-nqZ">
-                                        <rect key="frame" x="82" y="47" width="250" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="歌手-专辑" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skb-KI-nqZ">
+                                        <rect key="frame" x="82" y="49" width="250" height="14.5"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="250" id="i3w-CH-gIp"/>
                                         </constraints>
@@ -115,7 +113,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" restorationIdentifier="statusView" translatesAutoresizingMaskIntoConstraints="NO" id="vzz-5n-8OQ" userLabel="StatusView">
-                                <rect key="frame" x="8" y="40" width="359" height="85"/>
+                                <rect key="frame" x="8" y="20" width="359" height="85"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SWs-sg-BWg">
                                         <rect key="frame" x="15" y="7" width="74" height="34"/>
@@ -160,7 +158,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xOa-EI-i7F">
-                                <rect key="frame" x="4" y="133" width="367" height="391"/>
+                                <rect key="frame" x="4" y="113" width="367" height="411"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                             </tableView>
@@ -200,6 +198,7 @@
                         <outlet property="btnMore" destination="545-v8-gr4" id="Nr9-AJ-KTK"/>
                         <outlet property="btnPlayMode" destination="WKJ-Hz-Bqk" id="J1A-iG-LSp"/>
                         <outlet property="btnPlayPause" destination="hiG-dH-Y8j" id="PnK-Ry-I38"/>
+                        <outlet property="likeButtohn" destination="C2l-T7-dFa" id="pjA-ZZ-PHB"/>
                         <outlet property="logLabel" destination="Akc-xP-Xq5" id="ogV-rC-xl3"/>
                         <outlet property="progressSlider" destination="Dru-IT-V1x" id="WEV-nD-AdA"/>
                         <outlet property="singerLabel" destination="skb-KI-nqZ" id="akG-Zm-HuX"/>

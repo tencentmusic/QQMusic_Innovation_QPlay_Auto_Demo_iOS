@@ -192,6 +192,11 @@ static NSString * const QQMusic_PubKey = @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBg
     return [[QPlayAutoManager sharedInstance] requestSetPlayMode:playMode callback:block];
 }
 
++ (NSInteger)setAssenceMode:(QPlayAutoAssenceMode)assencceMode callback:(QPlayAutoRequestFinishBlock)block
+{
+    return [[QPlayAutoManager sharedInstance] requestSetAssenceMode:assencceMode callback:block];
+}
+
 + (NSInteger)queryFavoriteState:(NSString*)songId calllback:(QPlayAutoRequestFinishBlock)block
 {
     return [[QPlayAutoManager sharedInstance] requestQueryFavoriteState:songId calllback:block];

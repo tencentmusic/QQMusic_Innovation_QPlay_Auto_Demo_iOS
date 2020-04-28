@@ -131,7 +131,13 @@
  */
 + (NSInteger)setPlayMode:(QPlayAutoPlayMode)playMode callback:(QPlayAutoRequestFinishBlock _Nullable )block;
 
-
+/**
+ 设置播放整首还是高潮
+ 
+ @param block 回调
+ @return 请求ID
+ */
++ (NSInteger)setAssenceMode:(QPlayAutoAssenceMode)assencceMode callback:(QPlayAutoRequestFinishBlock _Nullable )block;
 /**
  查询收藏状态
 

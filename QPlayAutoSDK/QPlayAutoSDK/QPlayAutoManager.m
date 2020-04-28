@@ -28,6 +28,7 @@ NSString *const kQPlayAutoCmd_AddFavorite = @"AddFavorite";
 NSString *const kQPlayAutoCmd_RemoveFavorite = @"RemoveFavorite";
 NSString *const kQPlayAutoCmd_GetPlayMode = @"GetPlayMode";
 NSString *const kQPlayAutoCmd_SetPlayMode = @"SetPlayMode";
+NSString *const kQPlayAutoCmd_SetAssenceMode = @"SetAssenceMode";
 NSString *const kQPlayAutoCmd_GetCurrentSong = @"GetCurrentSong";
 NSString *const kQPlayAutoCmd_PICData = @"PICData";
 NSString *const kQPlayAutoCmd_LyricData = @"LyricData";
@@ -244,6 +245,15 @@ NSString *const kQPlayAutoCmd_Auth = @"Auth";
     [self.requestDic setObject:req forKey:req.key];
     
     NSString *msg = [NSString stringWithFormat:@"{\"RequestID\":%ld,\"Request\":\"%@\",\"Arguments\":{\"IntegerValue\":%d}}\r\n",(long)req.requestNo,kQPlayAutoCmd_SetPlayMode,(int)playMode];
+    [self.commandSocket sendMsg:msg];
+    return req.requestNo;
+}
+
+- (NSInteger)requestSetAssenceMode:(QPlayAutoAssenceMode)assenceMode callback:(QPlayAutoRequestFinishBlock)block {
+    QPlayAutoRequestInfo *req = [[QPlayAutoRequestInfo alloc]initWithRequestNO:[self getRequestId] finishBlock:block];
+    [self.requestDic setObject:req forKey:req.key];
+    
+    NSString *msg = [NSString stringWithFormat:@"{\"RequestID\":%ld,\"Request\":\"%@\",\"Arguments\":{\"IntegerValue\":%d}}\r\n",(long)req.requestNo,kQPlayAutoCmd_SetAssenceMode,(int)assenceMode];
     [self.commandSocket sendMsg:msg];
     return req.requestNo;
 }
@@ -525,7 +535,7 @@ NSString *const kQPlayAutoCmd_Auth = @"Auth";
     NSDictionary *contentDict = [resultDict objectForKey:key];
     NSObject *err = [contentDict objectForKey:@"Error"];
 
-    NSString *reqIdStr = [NSString stringWithFormat:@"%ld",[[resultDict objectForKey:@"RequestID"] integerValue]];
+    NSString *reqIdStr = [NSString stringWithFormat:@"%ld",(long)[[resultDict objectForKey:@"RequestID"] integerValue]];
     
    
     QPlayAutoRequestInfo * req = [self.requestDic objectForKey:reqIdStr];
@@ -533,7 +543,8 @@ NSString *const kQPlayAutoCmd_Auth = @"Auth";
     {
         if (req.finishBlock)
         {
-            req.finishBlock(err == nil, contentDict);
+            BOOL success = (err== nil) || ([self changeWithValue:err] == 0);
+            req.finishBlock(success, contentDict);
         }
         else
         {
@@ -545,6 +556,19 @@ NSString *const kQPlayAutoCmd_Auth = @"Auth";
         NSLog(@"注意了！！！没有找到对应的请求");
     }
     
+}
+
+- (int)changeWithValue:(id)value
+{
+   if([value isKindOfClass:[NSNumber class]])
+   {
+      int intValue = [value intValue];
+      return intValue;
+   }
+   else
+   {
+       return 1;
+   }
 }
 
 - (void)onDiscoversocket:(nonnull DiscoverSocket *)socket {

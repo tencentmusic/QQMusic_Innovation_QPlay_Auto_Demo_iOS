@@ -34,6 +34,9 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
 @property (nonatomic,strong) NSString *openId;
 @property (nonatomic,strong) NSString *openToken;
 
+@property (weak, nonatomic) IBOutlet UIButton *likeButtohn;
+@property (nonatomic,strong) UISegmentedControl       *assenceSegmentedControl;
+
 
 
 @end
@@ -59,8 +62,53 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
     self.imageCache = [[NSMutableDictionary alloc]init];
     [self.btnConnect setTitleColor:[UIColor colorWithRed:50.f/255 green:188.f/255 blue:108.f/255 alpha:1] forState:UIControlStateNormal];
     [self.btnMore setTitleColor:self.btnConnect.currentTitleColor forState:UIControlStateNormal];
+    [self setupUI];
 }
 
+- (void)setupUI {
+    _assenceSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"整首",@"高潮"]];
+    _assenceSegmentedControl.selectedSegmentIndex = 0;
+    [_assenceSegmentedControl addTarget:self action:@selector(assenceSegmentedControlChanged:) forControlEvents:UIControlEventValueChanged];
+    _assenceSegmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_assenceSegmentedControl];
+    
+    NSLayoutConstraint *a = [NSLayoutConstraint constraintWithItem:_assenceSegmentedControl attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:-20];
+    NSLayoutConstraint *b = [NSLayoutConstraint constraintWithItem:_assenceSegmentedControl attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_likeButtohn attribute:NSLayoutAttributeTop multiplier:1 constant:-15];
+    [NSLayoutConstraint activateConstraints:@[a,b]];
+}
+
+- (void)assenceSegmentedControlChanged:(UISegmentedControl*)sender {
+    if (sender.selectedSegmentIndex == 0) {
+        [QPlayAutoSDK setAssenceMode:QPlayAutoAssenceMode_Full callback:^(BOOL success, NSDictionary *dict) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (success) {
+                    UIAlertController *vc = [UIAlertController alertControllerWithTitle:nil message:@"设置 播放整首 成功" preferredStyle:UIAlertControllerStyleAlert];
+                    [vc addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:nil]];                [self presentViewController:vc animated:YES completion:nil];
+                }
+                else {
+                    UIAlertController *vc = [UIAlertController alertControllerWithTitle:nil message:@"设置 播放整首 失败" preferredStyle:UIAlertControllerStyleAlert];
+                    [vc addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:nil]];                [self presentViewController:vc animated:YES completion:nil];
+                }
+                
+            });
+        }];
+    }
+    else {
+        [QPlayAutoSDK setAssenceMode:QPlayAutoAssenceMode_Part callback:^(BOOL success, NSDictionary *dict) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (success) {
+                    UIAlertController *vc = [UIAlertController alertControllerWithTitle:nil message:@"设置 播放高潮 成功" preferredStyle:UIAlertControllerStyleAlert];
+                    [vc addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:nil]];                [self presentViewController:vc animated:YES completion:nil];
+                }
+                else {
+                    UIAlertController *vc = [UIAlertController alertControllerWithTitle:nil message:@"设置 播放高潮 失败" preferredStyle:UIAlertControllerStyleAlert];
+                    [vc addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:nil]];                [self presentViewController:vc animated:YES completion:nil];
+                }
+                
+            });
+        }];
+    }
+}
 
 - (IBAction)onClickStart:(id)sender {
     if([QPlayAutoSDK isStarted])

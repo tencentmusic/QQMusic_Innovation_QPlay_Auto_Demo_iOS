@@ -83,6 +83,11 @@ typedef NS_ENUM(NSUInteger, QPlayAutoPlayState)
     QPlayAutoPlayState_Pause=2      //暂停
 };
 
+typedef NS_ENUM(NSInteger, QPlayAutoAssenceMode)
+{
+    QPlayAutoAssenceMode_Full = 0, // 默认整首播放
+    QPlayAutoAssenceMode_Part = 1, // 仅播放精华片段
+};
 
 /**
  QPlayAuto播放模式

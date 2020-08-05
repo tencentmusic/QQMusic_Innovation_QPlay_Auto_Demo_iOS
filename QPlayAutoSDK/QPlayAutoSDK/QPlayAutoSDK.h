@@ -54,6 +54,11 @@
 + (BOOL)isQQMusicInstalled;
 
 /**
+查询qq音乐信息
+*/
++ (void)requestMobileDeviceInfos:(QPlayAutoRequestFinishBlock)block;
+
+/**
  开启QPlay
  */
 + (void)start;

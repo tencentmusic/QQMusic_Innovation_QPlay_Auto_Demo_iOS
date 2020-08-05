@@ -244,6 +244,14 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
                                    [self playWithMid];
                                    [alertView dismissViewControllerAnimated: YES completion: nil];
                                }];
+    UIAlertAction* requsetQQAction = [UIAlertAction actionWithTitle:@"查询QQ音乐信息"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction* action)
+                               
+                               {
+                                   [self requestQQMusicInfo];
+                                   [alertView dismissViewControllerAnimated: YES completion: nil];
+                               }];
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction* action)
@@ -257,10 +265,17 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
     [alertView addAction:mvAction];
     [alertView addAction:cancelAction];
     [alertView addAction:midSongAction];
+    [alertView addAction:requsetQQAction];
     [self presentViewController:alertView animated:NO completion:nil];
 }
 
 #pragma mark Private Method
+
+- (void)requestQQMusicInfo{
+    [QPlayAutoSDK requestMobileDeviceInfos:^(BOOL success, NSDictionary *dict) {
+        [self showErrorCodeAlert:[NSString stringWithFormat:@"%@",dict]];
+    }];
+}
 
 - (void)startProgressTimer
 {
@@ -295,7 +310,7 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
 - (void)playWithMid
 {
     //通过Mid播放陈亦迅两首歌
-    [QPlayAutoSDK playSongMidAtIndex:@[@"001OyHbk2MSIi4",@"002Y9YKQ4OdDYz"] playIndex:0 callback:^(BOOL success, NSDictionary *dict) {
+    [QPlayAutoSDK playSongMidAtIndex:@[@"0026ato22llymc",@"001fZLRw0Z0yRV"] playIndex:0 callback:^(BOOL success, NSDictionary *dict) {
         if (!success)
         {
             [self showErrorCodeAlert:[NSString stringWithFormat:@"%@",dict]];

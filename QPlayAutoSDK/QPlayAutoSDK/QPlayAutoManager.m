@@ -185,9 +185,11 @@ NSString *const kQPlayAutoCmd_Auth = @"Auth";
 #pragma mark Commands
 
 //查询移动设备信息
-- (void)requestMobileDeviceInfos
+- (void)requestMobileDeviceInfos:(QPlayAutoRequestFinishBlock)block
 {
-    NSString *msg = [NSString stringWithFormat:@"{\"RequestID\":0,\"Request\":\"%@\"}\r\n",kQPlayAutoCmd_MobileDeviceInfos];
+    QPlayAutoRequestInfo *req = [[QPlayAutoRequestInfo alloc]initWithRequestNO:[self getRequestId] finishBlock:block];
+    [self.requestDic setObject:req forKey:req.key];
+    NSString *msg = [NSString stringWithFormat:@"{\"RequestID\":%ld,\"Request\":\"%@\"}\r\n",(long)req.requestNo,kQPlayAutoCmd_MobileDeviceInfos];
     [self.commandSocket sendMsg:msg];
 }
 

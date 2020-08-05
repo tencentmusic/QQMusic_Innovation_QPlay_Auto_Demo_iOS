@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSInteger)requestSetAssenceMode:(QPlayAutoAssenceMode)assenceMode callback:(QPlayAutoRequestFinishBlock)block;
 
 
+- (void)requestMobileDeviceInfos:(QPlayAutoRequestFinishBlock)block;
+
 - (void)requestMediaInfo:(NSString*)songId;
 
 - (void)requestAlbumImage:(NSString*)songId pageIndex:(NSUInteger)pageIndex;

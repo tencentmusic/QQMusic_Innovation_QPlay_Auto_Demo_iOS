@@ -177,6 +177,10 @@ static NSString * const QQMusic_PubKey = @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBg
                                                  calllback:block];
 }
 
++ (void)requestMobileDeviceInfos:(QPlayAutoRequestFinishBlock)block{
+    [[QPlayAutoManager sharedInstance] requestMobileDeviceInfos:block];
+}
+
 + (NSInteger)getCurrentPlayInfo:(QPlayAutoRequestFinishBlock)block
 {
     return [[QPlayAutoManager sharedInstance] requestGetCurrentSong:block];

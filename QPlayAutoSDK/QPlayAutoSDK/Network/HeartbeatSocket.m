@@ -40,6 +40,7 @@
                                                 selector:@selector(sendHeartbeat)
                                                 userInfo:self
                                                  repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
 }
 
 - (void)stop

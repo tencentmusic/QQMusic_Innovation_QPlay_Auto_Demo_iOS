@@ -59,6 +59,7 @@
                                                         selector:@selector(discover)
                                                         userInfo:self
                                                          repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.discoverTimer forMode:NSRunLoopCommonModes];
 }
 
 - (void)stop

@@ -181,6 +181,7 @@ static NSData *base64_decode(NSString *str){
 	NSData *data = base64_decode(key);
 	data = [QMRSA stripPrivateKeyHeader:data];
 	if(!data){
+        NSLog(@"QPlayAuto:QMRSA data nil");
 		return nil;
 	}
 
@@ -208,6 +209,7 @@ static NSData *base64_decode(NSString *str){
 		CFRelease(persistKey);
 	}
 	if ((status != noErr) && (status != errSecDuplicateItem)) {
+        NSLog(@"QPlayAuto:SecItemAdd error");
 		return nil;
 	}
 
@@ -220,6 +222,7 @@ static NSData *base64_decode(NSString *str){
 	SecKeyRef keyRef = nil;
 	status = SecItemCopyMatching((__bridge CFDictionaryRef)privateKey, (CFTypeRef *)&keyRef);
 	if(status != noErr){
+        NSLog(@"QPlayAuto:SecItemCopyMatching error");
 		return nil;
 	}
 	return keyRef;
@@ -411,9 +414,13 @@ static NSData *base64_decode(NSString *str){
 {
     NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
     SecKeyRef keyRef = [self addPrivateKey:privKey];
-    NSData *signData = [self PKCSSignBytesSHA256withRSA:data privKey:keyRef];
-    NSString *ret = base64_encode_data(signData);
-    return ret;
+    if (keyRef) {
+        NSData *signData = [self PKCSSignBytesSHA256withRSA:data privKey:keyRef];
+        NSString *ret = base64_encode_data(signData);
+        return ret;
+    }
+    NSLog(@"QPlayAuto:获取keyRef为空");
+    return @"";
 }
 
 + (NSData*)PKCSSignBytesSHA256withRSA:(NSData*)plainData privKey:(SecKeyRef)privateKey

@@ -323,6 +323,7 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
 
 - (void)updatePlayState:(QPlayAutoPlayState)playState song:(QPlayAutoListItem*)song position:(NSInteger)progress
 {
+    NSLog(@"- position (%ld)",(long)progress);
     if (song.Type!=QPlayAutoListItemType_Song)
         return;
     self.playState = playState;
@@ -423,7 +424,7 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
     if (self.currentSong==nil || self.playState!=QPlayAutoPlayState_Playing || self.currentSong.Duration<=0)
         return;
     self.currentProgress ++ ;
-    //    NSLog(@"更新进度:%d/%d",(int)self.currentProgress,(int)self.currentSong.Duration);
+    NSLog(@"更新进度:%d/%d",(int)self.currentProgress,(int)self.currentSong.Duration);
     if(self.currentProgress>self.currentSong.Duration)
         self.currentProgress = self.currentSong.Duration;
     else if(self.currentProgress<0)
@@ -680,17 +681,17 @@ static NSString * const App_PrivateKey = @"";//RSA私钥
     }
     
     QPlayAutoListItem *listItem = [self.currentItem.items objectAtIndex:indexPath.row];
-    if (listItem.Type == QPlayAutoListItemType_Song)
-    {
-        cell.imageView.image = [UIImage imageNamed:@"song"];
+    if (listItem.CoverUri.length) {
+        NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:listItem.CoverUri] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            UIImage *image = [UIImage imageWithData:data];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.imageView.image = image;
+            });
+        }];
+        [downloadTask resume];
     }
-    else if (listItem.Type == QPlayAutoListItemType_Radio)
-    {
-        cell.imageView.image = [UIImage imageNamed:@"radio"];
-    }
-    else
-    {
-        cell.imageView.image = [UIImage imageNamed:@"playlist"];
+    else {
+        cell.imageView.image = nil;
     }
     cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.text = listItem.Name;

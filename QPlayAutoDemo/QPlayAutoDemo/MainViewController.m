@@ -350,6 +350,7 @@
     [self requestContent:self.rootItem pageIndex:0 pageSize:NormalPageSize];
     [self.connectButton setTitle:@"断开"];
     [self.tableView reloadData];
+    NSLog(@"apptoken : %@ - %@",[QPlayAutoSDK openId],[QPlayAutoSDK openToken]);
 }
 
 - (void)onDisconnect {

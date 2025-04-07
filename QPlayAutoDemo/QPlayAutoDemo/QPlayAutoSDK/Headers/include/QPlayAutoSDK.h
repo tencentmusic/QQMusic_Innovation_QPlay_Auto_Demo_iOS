@@ -69,6 +69,9 @@ extern NSString const * QPlayAutoSDKVersion;
 ///QQ音乐设备信息
 + (NSDictionary *)deviceInfo;
 
++(NSString *)openId;
++(NSString *)openToken;
+
 
 ///是否可以处理回调url
 + (BOOL)canHandleOpenURL:(NSURL *)url;

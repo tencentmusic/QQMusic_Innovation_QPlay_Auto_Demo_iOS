@@ -5,6 +5,7 @@
 //  Created by macrzhou on 2024/8/6.
 //  Copyright © 2024 腾讯音乐. All rights reserved.
 //
+
 #import "MainViewController.h"
 #import "QPlayAutoSDK.h"
 #import "MainTableCell.h"
@@ -13,6 +14,7 @@
 #import "MJRefresh.h"
 #import "CustomSlider.h"
 #import "SDWebImage.h"
+#import "PlaylistPopupView.h"
 
 #define NormalPageSize  (30)
 
@@ -216,7 +218,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentSongDidChanged) name:QPlayAuto_CurrentSongChanged object:nil];
 }
 
 - (void)setupRightMenu {
@@ -266,7 +268,10 @@
         [self presentViewController:vc animated:YES completion:nil];
     }];
     UIMenu *menu = [UIMenu menuWithTitle:@"" children:@[action1, action2,action3,action4,action5]];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage systemImageNamed:@"ellipsis" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:20 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.orangeColor renderingMode:UIImageRenderingModeAlwaysOriginal] menu:menu];
+    
+    UIBarButtonItem *listButton = [[UIBarButtonItem alloc] initWithImage:[[UIImage systemImageNamed:@"list.bullet" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:17 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.orangeColor renderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(listButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithImage:[[UIImage systemImageNamed:@"ellipsis" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:20 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.orangeColor renderingMode:UIImageRenderingModeAlwaysOriginal] menu:menu],listButton];
 }
 
 - (void)setupConstraints {
@@ -350,7 +355,6 @@
     [self requestContent:self.rootItem pageIndex:0 pageSize:NormalPageSize];
     [self.connectButton setTitle:@"断开"];
     [self.tableView reloadData];
-    NSLog(@"apptoken : %@ - %@",[QPlayAutoSDK openId],[QPlayAutoSDK openToken]);
 }
 
 - (void)onDisconnect {
@@ -390,21 +394,25 @@
 - (void)onSongFavoriteStateChange:(NSString *)songID isFavorite:(BOOL)isFavorite {
     if(self.currentSong && [self.currentSong.ID isEqualToString:songID]){
         self.currentSong.isFav = isFavorite;
-        [self updateUIWithSong:self.currentSong];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateUIWithSong:self.currentSong];
+        });
     }
 }
 
 - (void)onQPlayAutoPlayProgressChanged:(QPlayAutoListItem *)song progress:(NSTimeInterval)progress duration:(NSTimeInterval)duration {
-    if(self.sliderDragged == NO){
-        self.slider.maximumValue = duration;
-        self.slider.value = progress;
-        self.beginTimeLabel.text = [self formatDuration:progress];
-    }
-    if(self.currentLyric && [self.currentLyric.songId isEqualToString:song.ID]){
-        self.lyricLabel.text = [self.currentLyric sentenceAtTime:progress];
-    }else {
-        self.lyricLabel.text = nil;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(self.sliderDragged == NO){
+            self.slider.maximumValue = duration;
+            self.slider.value = progress;
+            self.beginTimeLabel.text = [self formatDuration:progress];
+        }
+        if(self.currentLyric && [self.currentLyric.songId isEqualToString:song.ID]){
+            self.lyricLabel.text = [self.currentLyric sentenceAtTime:progress];
+        }else {
+            self.lyricLabel.text = nil;
+        }
+    });
 }
 
 -(void)onPlayPausedByTimeoff {
@@ -412,61 +420,78 @@
 }
 
 - (void)onLoginStateDidChanged:(BOOL)isLoginOK {
-    [self setupRightMenu];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setupRightMenu];
+    });
 }
 
 - (void)onPlayModeChange:(QPlayAutoPlayMode)playMode {
-    UIImage *modeImage = nil;
-    switch (playMode) {
-        case QPlayAutoPlayMode_SingleCircle:
-            modeImage = [[UIImage systemImageNamed:@"repeat.1.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
-            break;
-        case QPlayAutoPlayMode_RandomCircle:
-            modeImage = [[UIImage systemImageNamed:@"shuffle.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
-            break;
-        case QPlayAutoPlayMode_SequenceCircle:
-            modeImage = [[UIImage systemImageNamed:@"repeat.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
-            break;
-    }
-    [self.modeButton setImage:modeImage forState:UIControlStateNormal];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImage *modeImage = nil;
+        switch (playMode) {
+            case QPlayAutoPlayMode_SingleCircle:
+                modeImage = [[UIImage systemImageNamed:@"repeat.1.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
+                break;
+            case QPlayAutoPlayMode_RandomCircle:
+                modeImage = [[UIImage systemImageNamed:@"shuffle.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
+                break;
+            case QPlayAutoPlayMode_SequenceCircle:
+                modeImage = [[UIImage systemImageNamed:@"repeat.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:25 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.systemTealColor renderingMode:UIImageRenderingModeAlwaysOriginal];
+                break;
+        }
+        [self.modeButton setImage:modeImage forState:UIControlStateNormal];
+    });
 }
 
 - (void)onQPlayAutoConnectStateChanged:(QPlayAutoConnectState)newState {
-    switch (newState) {
-        case QPlayAutoConnectState_Disconnect:
-            [self onDisconnect];
-            break;
-        case QPlayAutoConnectState_Connected:
-            [self onConnected];
-            break;
-        case QPlayAutoConnectState_Cancel:
-            [self showAlertWithContent:@"取消连接"];
-            break;
-        case QPlayAutoConnectState_Failed:
-            [self showAlertWithContent:@"连接失败"];
-            break;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        switch (newState) {
+            case QPlayAutoConnectState_Disconnect:
+                [self onDisconnect];
+                break;
+            case QPlayAutoConnectState_Connected:
+                [self onConnected];
+                break;
+            case QPlayAutoConnectState_Cancel:
+                [self showAlertWithContent:@"取消连接"];
+                break;
+            case QPlayAutoConnectState_Privacy:
+                [self showAlertWithContent:@"拒绝了隐私协议"];
+                break;
+            case QPlayAutoConnectState_Failed:
+                [self showAlertWithContent:@"连接失败"];
+                break;
+        }
+    });
 }
 
 - (void)onQPlayAutoPlayStateChanged:(QPlayAutoPlayState)playState song:(QPlayAutoListItem *)song position:(NSInteger)position {
-    NSLog(@"state change:(%lu)",(unsigned long)playState);
-    switch (playState) {
-        case QPlayAutoPlayState_Stop:
-            [self.playButton setImage:[[UIImage systemImageNamed:@"play.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-            break;
-        case QPlayAutoPlayState_Pause:
-            [self.playButton setImage:[[UIImage systemImageNamed:@"play.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-            break;
-        case QPlayAutoPlayState_Playing:
-            [self.playButton setImage:[[UIImage systemImageNamed:@"pause.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-            break;
-    }
-    [self updateUIWithSong:song];
-    self.slider.value = position;
-    self.beginTimeLabel.text = [self formatDuration:position];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"state change:(%lu)",(unsigned long)playState);
+        switch (playState) {
+            case QPlayAutoPlayState_Stop:
+                [self.playButton setImage:[[UIImage systemImageNamed:@"play.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+                break;
+            case QPlayAutoPlayState_Pause:
+                [self.playButton setImage:[[UIImage systemImageNamed:@"play.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+                break;
+            case QPlayAutoPlayState_Playing:
+                [self.playButton setImage:[[UIImage systemImageNamed:@"pause.circle" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:45 weight:UIImageSymbolWeightRegular]] imageWithTintColor:UIColor.blackColor renderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+                break;
+        }
+        [self updateUIWithSong:song];
+        self.slider.value = position;
+        self.beginTimeLabel.text = [self formatDuration:position];
+    });
 }
 
 #pragma mark - Notifactions
+- (void)currentSongDidChanged {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+}
+
 - (void)keyboardDidShow:(NSNotification *)notification {
     [self.view addGestureRecognizer:self.tapped];
 }
@@ -476,6 +501,10 @@
 }
 
 #pragma mark - Actions
+- (void)listButtonPressed {
+    [[PlaylistPopupView sharedInstance] show];
+}
+
 - (void)connectButtonPressed:(UIBarButtonItem *)sender {
     if([QPlayAutoSDK isConnected]) {
         [QPlayAutoSDK stop];
@@ -485,7 +514,7 @@
         [self.tableView reloadData];
     } else {
         if(QPlayAutoSDK.isConnecting == NO){
-            [QPlayAutoSDK connectAndForceLogin:YES];
+            [QPlayAutoSDK connectAndForceLogin:NO];
         } else {
             [self showAlertWithContent:@"正在重连中"];
         }

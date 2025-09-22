@@ -17,6 +17,8 @@ typedef void (^QPlayAutoResultItemsBlock)(NSInteger errorCode,NSArray<QPlayAutoL
 typedef void (^QPlayAutoResultParentItemBlock)(NSInteger errorCode,QPlayAutoListItem *parentItem);
 
 extern NSString const * QPlayAutoSDKVersion;
+extern NSNotificationName QPlayAuto_PlayingListChanged;
+extern NSNotificationName QPlayAuto_CurrentSongChanged;
 
 @protocol QPlayAutoSDKDelegate <NSObject>
 
@@ -58,6 +60,8 @@ extern NSString const * QPlayAutoSDKVersion;
 + (QPlayAutoPlayState)currentPlayState;
 /// 当前播放进度
 + (NSTimeInterval)currentProgress;
+/// 当前播放列表
++ (NSArray<QPlayAutoListItem *> *)playingList;
 /// QQ音乐是否登录
 + (BOOL)isLoginOK;
 ///  检查QQ音乐是否已安装

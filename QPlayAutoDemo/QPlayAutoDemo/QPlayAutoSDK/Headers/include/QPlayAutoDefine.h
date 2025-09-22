@@ -64,6 +64,7 @@ typedef NS_ENUM(NSUInteger, QPlayAutoConnectState)
     QPlayAutoConnectState_Disconnect =  1,       //断开连接
     QPlayAutoConnectState_Failed     = -1,       //连接失败
     QPlayAutoConnectState_Cancel     = -2,       //连接取消
+    QPlayAutoConnectState_Privacy    = -3        //拒绝隐私协议
 };
 
 /*
@@ -144,6 +145,7 @@ typedef NS_ENUM(NSInteger, QPlayAutoVipState)
 @property (nonatomic,assign) NSInteger qmCommandPort; //Q音接收命令端口
 @property (nonatomic,strong) NSString *qmHost; //Q音接收命令IP
 @property (nonatomic,strong) NSDate *lastConnectDate;//上次连接的日期
+@property (nonatomic,readonly) NSString *sdkVersion;
 @end
 
 @interface QPlayAutoSinger : NSObject

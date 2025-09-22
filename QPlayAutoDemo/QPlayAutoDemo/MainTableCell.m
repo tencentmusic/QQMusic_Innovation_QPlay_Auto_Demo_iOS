@@ -8,6 +8,7 @@
 
 #import "MainTableCell.h"
 #import "SDWebImage.h"
+#import "QPlayAutoSDK.h"
 
 @interface MainTableCell()
 @property (nonatomic) UIImageView *albumImageView;
@@ -57,6 +58,15 @@
         }
         self.tryListenLabel.hidden = !item.isTryListen;
         self.orginalLabel.hidden = !item.isOrigin;
+        if ([[QPlayAutoSDK currentSong].ID isEqualToString:item.ID]) {
+            self.titleLabel.textColor = [UIColor orangeColor];
+            self.subtitleLabel.textColor = [UIColor orangeColor];
+        }
+        else {
+            self.titleLabel.textColor = UIColor.blackColor;
+            self.subtitleLabel.textColor = [UIColor.blackColor colorWithAlphaComponent:0.5];
+        }
+
     }else{
         self.subtitleLabel.text = nil;
     }
